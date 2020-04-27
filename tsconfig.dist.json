@@ -1,17 +1,18 @@
 {
     "compilerOptions": {
         "target": "es5",
-        "watch": true,
+        "watch": false,
         "module": "commonJS",
         "noImplicitAny": true,
         "removeComments": true,
         "preserveConstEnums": true,
-        "sourceMap": true,
+        "sourceMap": false,
         "moduleResolution": "node",
         "emitDecoratorMetadata": true,
         "experimentalDecorators": true,
         "importHelpers": true,
         "declaration": true,
+        "outDir": "dist",
         "lib": [
             "es6",
             "dom"
@@ -19,5 +20,9 @@
     },
     "files": [
         "index.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
     ]
 }

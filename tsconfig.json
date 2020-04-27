@@ -1,0 +1,23 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "watch": true,
+        "module": "commonJS",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "declaration": true,
+        "lib": [
+            "es6",
+            "dom"
+        ]
+    },
+    "files": [
+        "index.ts"
+    ]
+}

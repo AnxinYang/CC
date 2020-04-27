@@ -62,6 +62,19 @@ export function unbind(handlerToken: string) {
     return subMap.delete(name)
 }
 
+export function hasHandler(key: string, name: string) {
+    if (!key || !name) return false;
+    let subMap = HandlerMap.get(key);
+
+    if (!subMap) return false;
+
+    return subMap.has(name);
+}
+
+export function hasHandlers(key: string) {
+    if (!key) return false;
+    return HandlerMap.has(key);
+}
 
 export function _getDataMap() {
     return DataMap;

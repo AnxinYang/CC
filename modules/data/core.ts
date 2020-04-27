@@ -1,8 +1,10 @@
 type Handler = (value: any) => undefined | boolean | Promise<void | boolean>;
 
 class DataSet {
+    name: string;
     dataMap: Map<string, any> = new Map();
     handlerMap: Map<string, Map<string, Handler>> = new Map();
+
     set(key: string, value: any) {
         this.dataMap.set(key, value);
         this.cast(key, value);
@@ -33,22 +35,14 @@ class DataSet {
 
         if (typeof param === 'string') {
             if (!handler) return null;
-            return this._bind(key, param, handler)
+            return _bind.call(this, key, param, handler)
         }
 
         if (typeof param === 'function') {
-            return this._bind(key, `${Date.now()}`, handler)
+            return _bind.call(this, key, `${Date.now()}`, handler)
         }
 
         return null;
-    }
-    _bind(key: string, name: string, handler: Handler) {
-        let subMap: Map<string, Handler> = this.handlerMap.get(key) ?? new Map();
-
-        subMap.set(name, handler);
-        this.handlerMap.set(key, subMap);
-
-        return `${key}-${name}`;
     }
 
     unbind(handlerToken: string) {
@@ -83,6 +77,15 @@ class DataSet {
     gethandlerMap() {
         return this.handlerMap;
     }
+}
+
+function _bind(key: string, name: string, handler: Handler) {
+    let subMap: Map<string, Handler> = this.handlerMap.get(key) ?? new Map();
+
+    subMap.set(name, handler);
+    this.handlerMap.set(key, subMap);
+
+    return `${key}-${name}`;
 }
 
 export function dataSet() {

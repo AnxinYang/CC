@@ -1,85 +1,90 @@
 type Handler = (value: any) => undefined | boolean | Promise<void | boolean>;
 
-const DataMap: Map<string, any> = new Map();
-const HandlerMap: Map<string, Map<string, Handler>> = new Map();
-
-export function set(key: string, value: any) {
-    DataMap.set(key, value);
-    cast(key, value);
-    return value;
-}
-
-export function get(key: string, defaultValue: any) {
-    DataMap.get(key);
-
-    return DataMap.get(key) ?? defaultValue;
-}
-
-export function cast(key: string, value: any) {
-    let subMap = HandlerMap.get(key);
-
-    if (!subMap) return;
-
-    subMap.forEach(async function (handler, name) {
-        let result = await handler(value);
-        if (result === false) unbind(`${key}-${name}`)
-    });
-}
-
-export function bind(key: string, handler: (value: any) => undefined | boolean | Promise<void | boolean>): string;
-export function bind(key: string, name: string, string: (value: any) => undefined | boolean | Promise<void | boolean>): string
-export function bind(key: string, param: string | Handler, handler?: Handler): string {
-    if (!key || !param) return null;
-
-    if (typeof param === 'string') {
-        if (!handler) return null;
-        return _bind(key, param, handler)
+class DataSet {
+    dataMap: Map<string, any> = new Map();
+    handlerMap: Map<string, Map<string, Handler>> = new Map();
+    set(key: string, value: any) {
+        this.dataMap.set(key, value);
+        this.cast(key, value);
+        return value;
     }
 
-    if (typeof param === 'function') {
-        return _bind(key, `${Date.now()}`, handler)
+    get(key: string, defaultValue: any) {
+        this.dataMap.get(key);
+
+        return this.dataMap.get(key) ?? defaultValue;
     }
 
-    return null;
+    cast(key: string, value: any) {
+        let subMap = this.handlerMap.get(key);
+
+        if (!subMap) return;
+
+        subMap.forEach(async function (handler, name) {
+            let result = await handler(value);
+            if (result === false) this.unbind(`${key}-${name}`)
+        });
+    }
+
+    bind(key: string, handler: (value: any) => undefined | boolean | Promise<void | boolean>): string;
+    bind(key: string, name: string, string: (value: any) => undefined | boolean | Promise<void | boolean>): string
+    bind(key: string, param: string | Handler, handler?: Handler): string {
+        if (!key || !param) return null;
+
+        if (typeof param === 'string') {
+            if (!handler) return null;
+            return this._bind(key, param, handler)
+        }
+
+        if (typeof param === 'function') {
+            return this._bind(key, `${Date.now()}`, handler)
+        }
+
+        return null;
+    }
+    _bind(key: string, name: string, handler: Handler) {
+        let subMap: Map<string, Handler> = this.handlerMap.get(key) ?? new Map();
+
+        subMap.set(name, handler);
+        this.handlerMap.set(key, subMap);
+
+        return `${key}-${name}`;
+    }
+
+    unbind(handlerToken: string) {
+        if (!handlerToken) return false;
+
+        let [key, name] = handlerToken.split('-');
+        let subMap = this.handlerMap.get(key);
+
+        if (!subMap) return false;
+
+        return subMap.delete(name)
+    }
+
+    hasHandler(key: string, name: string) {
+        if (!key || !name) return false;
+        let subMap = this.handlerMap.get(key);
+
+        if (!subMap) return false;
+
+        return subMap.has(name);
+    }
+
+    hasHandlers(key: string) {
+        if (!key) return false;
+        return this.handlerMap.has(key);
+    }
+
+    getdataMap() {
+        return this.dataMap;
+    }
+
+    gethandlerMap() {
+        return this.handlerMap;
+    }
 }
-function _bind(key: string, name: string, handler: Handler) {
-    let subMap: Map<string, Handler> = HandlerMap.get(key) ?? new Map();
 
-    subMap.set(name, handler);
-    HandlerMap.set(key, subMap);
-
-    return `${key}-${name}`;
-}
-
-export function unbind(handlerToken: string) {
-    if (!handlerToken) return false;
-
-    let [key, name] = handlerToken.split('-');
-    let subMap = HandlerMap.get(key);
-
-    if (!subMap) return false;
-
-    return subMap.delete(name)
-}
-
-export function hasHandler(key: string, name: string) {
-    if (!key || !name) return false;
-    let subMap = HandlerMap.get(key);
-
-    if (!subMap) return false;
-
-    return subMap.has(name);
-}
-
-export function hasHandlers(key: string) {
-    if (!key) return false;
-    return HandlerMap.has(key);
-}
-
-export function _getDataMap() {
-    return DataMap;
-}
-
-export function _getHandlerMap() {
-    return HandlerMap;
+export function dataSet() {
+    return new DataSet();
 }

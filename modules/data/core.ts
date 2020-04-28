@@ -1,4 +1,4 @@
-type Handler = (value: any) => undefined | boolean | Promise<void | boolean>;
+type Handler = (value: any) => void | boolean | Promise<void | boolean>;
 
 class DataSet {
     name: string;
@@ -19,17 +19,18 @@ class DataSet {
 
     cast(key: string, value: any) {
         let subMap = this.handlerMap.get(key);
+        let self = this;
 
         if (!subMap) return;
 
         subMap.forEach(async function (handler, name) {
             let result = await handler(value);
-            if (result === false) this.unbind(`${key}-${name}`)
+            if (result === false) self.unbind(`${key}-${name}`)
         });
     }
 
-    bind(key: string, handler: (value: any) => undefined | boolean | Promise<void | boolean>): string;
-    bind(key: string, name: string, string: (value: any) => undefined | boolean | Promise<void | boolean>): string
+    bind(key: string, handler: (value: any) => void | boolean | Promise<void | boolean>): string;
+    bind(key: string, name: string, string: (value: any) => void | boolean | Promise<void | boolean>): string
     bind(key: string, param: string | Handler, handler?: Handler): string {
         if (!key || !param) return null;
 
@@ -39,7 +40,7 @@ class DataSet {
         }
 
         if (typeof param === 'function') {
-            return _bind.call(this, key, `${Date.now()}`, handler)
+            return _bind.call(this, key, `${Date.now()}.${(Math.random() * 100).toFixed(0)}`, param)
         }
 
         return null;
@@ -50,10 +51,17 @@ class DataSet {
 
         let [key, name] = handlerToken.split('-');
         let subMap = this.handlerMap.get(key);
+        let result = true;
 
         if (!subMap) return false;
 
-        return subMap.delete(name)
+        result = subMap.delete(name);
+
+        if (!result) return false;
+
+        if (subMap.size === 0) result = this.handlerMap.delete(key);
+
+        return result
     }
 
     hasHandler(key: string, name: string) {
@@ -79,7 +87,10 @@ class DataSet {
     }
 }
 
-function _bind(key: string, name: string, handler: Handler) {
+async function _bind(key: string, name: string, handler: Handler) {
+    let result = await handler(this.get(key));
+    if (result === false) return;
+
     let subMap: Map<string, Handler> = this.handlerMap.get(key) ?? new Map();
 
     subMap.set(name, handler);

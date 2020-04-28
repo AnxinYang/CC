@@ -1,0 +1,27 @@
+{
+  "name": "project-f",
+  "version": "0.0.0",
+  "description": "",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "prepublish": "tsc -p tsconfig.dist.json",
+  "scripts": {
+    "dev": "tsc -p tsconfig.dev.json",
+    "dist": "tsc -p tsconfig.dist.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AnxinYang/Project-F.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AnxinYang/Project-F/issues"
+  },
+  "homepage": "https://github.com/AnxinYang/Project-F#readme",
+  "dependencies": {
+    "ts-loader": "^4.5.0",
+    "tslib": "^1.11.1",
+    "typescript": "^3.6.3"
+  }
+}

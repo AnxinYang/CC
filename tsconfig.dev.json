@@ -1,0 +1,28 @@
+{
+    "compilerOptions": {
+        "target": "es5",
+        "watch": true,
+        // "module": "",
+        "noImplicitAny": true,
+        "removeComments": true,
+        "preserveConstEnums": true,
+        "sourceMap": true,
+        "moduleResolution": "node",
+        "emitDecoratorMetadata": true,
+        "experimentalDecorators": true,
+        "importHelpers": true,
+        "declaration": true,
+        "outDir": "dev",
+        "lib": [
+            "es6",
+            "dom"
+        ]
+    },
+    "files": [
+        "test.ts"
+    ],
+    "exclude": [
+        "node_modules",
+        "dist"
+    ],
+}

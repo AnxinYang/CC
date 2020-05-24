@@ -1,6 +1,6 @@
 {
-  "name": "project-f",
-  "version": "0.0.0",
+  "name": "anxin-tools",
+  "version": "0.1.0",
   "description": "",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -11,14 +11,14 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/AnxinYang/Project-F.git"
+    "url": "git+https://github.com/AnxinYang/anxin-tools.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/AnxinYang/Project-F/issues"
+    "url": "https://github.com/AnxinYang/anxin-tools/issues"
   },
-  "homepage": "https://github.com/AnxinYang/Project-F#readme",
+  "homepage": "https://github.com/AnxinYang/anxin-tools#readme",
   "dependencies": {
     "ts-loader": "^4.5.0",
     "tslib": "^1.11.1",
